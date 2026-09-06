@@ -186,6 +186,7 @@ impl Engine {
 
                         // Check for data race.
                         #[cfg(not(feature = "no_closure"))]
+                        #[cfg(not(feature = "unchecked"))]
                         super::ensure_no_data_race(&fn_def.name, args, false)?;
 
                         let env = env.as_deref();

@@ -332,6 +332,7 @@ fn test_closures_data_race() {
         42
     );
 
+    #[cfg(not(feature = "unchecked"))]
     assert!(matches!(
         *engine
             .eval::<INT>(

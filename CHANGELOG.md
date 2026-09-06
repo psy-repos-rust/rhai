@@ -9,6 +9,7 @@ Bug fixes
 
 * Fixed bug in using bare function name as a variable (identified by Grain VM).
 * Support bare function names as variables in Rhai Grain ([`#1158`](https://github.com/rhaiscript/rhai/pull/1158)).
+* (Fuzzing) Fixed missing data-race condition in native function callbacks ([`#1161`](https://github.com/rhaiscript/rhai/pull/1161)).
 
 New features
 ------------
@@ -18,10 +19,11 @@ New features
 Enhancements
 ------------
 
+* Rhai Grain is no longer _experimental_.
 * Rhai Grain bytecodes transpilation is optimized (thanks [`@ImTheSquid`](https://github.com/ImTheSquid) [`#1156`](https://github.com/rhaiscript/rhai/pull/1156)).
 * Rhai Grain VM is now at par or faster than the AST interpreter for scripts with callbacks ([`#1159`](https://github.com/rhaiscript/rhai/pull/1159)).
-* `rhai-run` now supports loading and executing Rhai Grain bytecodes (if the `grain` feature is enabled).
-* The example `grain_dump` is now split into two CLI tools in `bin`: `grain-compile`, which compiles a Rhai script into Rhai Grain bytecodes, and `grain-dump` which dissembles a Rhai Grain bytecodes files.
+* `rhai-run` now supports loading and executing Rhai Grain bytecodes if the `grain` feature is enabled ([`#1160`](https://github.com/rhaiscript/rhai/pull/1160)).
+* The example `grain_dump` is now split into two CLI tools in `bin`: `grain-compile`, which compiles a Rhai script into Rhai Grain bytecodes, and `grain-dump` which dissembles a Rhai Grain bytecodes files ([`#1160`](https://github.com/rhaiscript/rhai/pull/1160)).
 
 
 Version 1.26.0

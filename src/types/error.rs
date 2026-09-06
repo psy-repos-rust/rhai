@@ -82,7 +82,7 @@ pub enum EvalAltResult {
     /// The `for` statement encounters a type that is not iterable.
     ErrorFor(Position),
 
-    /// Data race detected when accessing a variable. Wrapped value is the variable name.
+    /// Data race detected when accessing a variable. Wrapped value is description of the error variable.
     ErrorDataRace(String, Position),
     /// Calling a non-pure method on a constant.  Wrapped value is the function name.
     ErrorNonPureMethodCallOnConstant(String, Position),
@@ -165,7 +165,7 @@ impl EvalAltResult {
             Self::ErrorFunctionNotFound(s, ..) => write!(f, "Function not found: {s}")?,
             Self::ErrorModuleNotFound(s, ..) => write!(f, "Module not found: {s}")?,
             Self::ErrorDataRace(s, ..) if s.is_empty() => write!(f, "Data race detected")?,
-            Self::ErrorDataRace(s, ..) => write!(f, "Data race detected on variable '{s}'")?,
+            Self::ErrorDataRace(s, ..) => write!(f, "Data race detected on {s}")?,
 
             Self::ErrorDotExpr(s, ..) if s.is_empty() => f.write_str("Malformed dot expression")?,
             Self::ErrorDotExpr(s, ..) => f.write_str(s)?,
