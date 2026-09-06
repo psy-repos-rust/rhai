@@ -1766,11 +1766,19 @@ impl Dynamic {
     #[must_use]
     pub fn is_locked(&self) -> bool {
         #[cfg(not(feature = "no_closure"))]
-        if let Union::Shared(ref _cell, ..) = self.0 {
-            #[cfg(not(feature = "sync"))]
-            return _cell.try_borrow().is_err();
-            #[cfg(feature = "sync")]
-            return false;
+        match self.0 {
+            #[cfg(not(feature = "no_index"))]
+            Union::Array(ref arr, ..) => return arr.iter().any(Self::is_locked),
+            #[cfg(not(feature = "no_object"))]
+            Union::Map(ref map, ..) => return map.values().any(Self::is_locked),
+            Union::FnPtr(ref f, ..) => return f.curry().iter().any(Self::is_locked),
+            Union::Shared(ref _cell, ..) => {
+                #[cfg(not(feature = "sync"))]
+                return _cell.try_borrow().is_err();
+                #[cfg(feature = "sync")]
+                return false;
+            }
+            _ => (),
         }
 
         false

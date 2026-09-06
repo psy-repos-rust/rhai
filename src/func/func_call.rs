@@ -224,6 +224,7 @@ impl Drop for ArgBackup<'_> {
 
 // Ensure no data races in function call arguments.
 #[cfg(not(feature = "no_closure"))]
+#[cfg(not(feature = "unchecked"))]
 #[inline]
 pub fn ensure_no_data_race(fn_name: &str, args: &FnCallArgs, is_ref_mut: bool) -> RhaiResultOf<()> {
     args.iter()
@@ -543,6 +544,11 @@ impl Engine {
     ) -> RhaiResultOf<(Dynamic, bool)> {
         self.track_operation(global, pos)?;
 
+        // Check for data race.
+        #[cfg(not(feature = "no_closure"))]
+        #[cfg(not(feature = "unchecked"))]
+        ensure_no_data_race(name, args, is_ref_mut)?;
+
         if let Some(result) = self.exec_syntactic_fn_call(global, caches, name, args, pos)? {
             return Ok((result, false));
         }
@@ -795,14 +801,15 @@ impl Engine {
         _is_method_call: bool,
         pos: Position,
     ) -> RhaiResultOf<(Dynamic, bool)> {
+        // Check for data race.
+        #[cfg(not(feature = "no_closure"))]
+        #[cfg(not(feature = "unchecked"))]
+        ensure_no_data_race(fn_name, args, is_ref_mut)?;
+
         // These may be redirected from method style calls.
         if let Some(result) = self.exec_syntactic_fn_call(global, caches, fn_name, args, pos)? {
             return Ok((result, false));
         }
-
-        // Check for data race.
-        #[cfg(not(feature = "no_closure"))]
-        ensure_no_data_race(fn_name, args, is_ref_mut)?;
 
         defer! { let orig_level = global.level; global.level += 1 }
 

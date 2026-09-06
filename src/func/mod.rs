@@ -18,6 +18,7 @@ pub mod script;
 pub use builtin::{get_builtin_binary_op_fn, get_builtin_op_assignment_fn};
 pub use func_args::FuncArgs;
 #[cfg(not(feature = "no_closure"))]
+#[cfg(not(feature = "unchecked"))]
 #[cfg(not(feature = "no_ast"))]
 pub use func_call::ensure_no_data_race;
 pub use func_call::{FnCallArgs, FnCallHashes};

@@ -198,6 +198,7 @@ impl Engine {
 
             // Check for data race.
             #[cfg(not(feature = "no_closure"))]
+            #[cfg(not(feature = "unchecked"))]
             crate::func::ensure_no_data_race(name, args, false)?;
 
             if let Some(fn_def) = ast.shared_lib().get_script_fn(name, args.len()) {

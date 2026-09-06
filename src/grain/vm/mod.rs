@@ -288,9 +288,12 @@ fn place<'a>(
     name: &str,
     pos: Position,
 ) -> Result<DynamicWriteLock<'a, Dynamic>, Box<EvalAltResult>> {
-    entry
-        .write_lock::<Dynamic>()
-        .ok_or_else(|| Box::new(EvalAltResult::ErrorDataRace(name.to_string(), pos)))
+    entry.write_lock::<Dynamic>().ok_or_else(|| {
+        Box::new(EvalAltResult::ErrorDataRace(
+            format!("variable '{name}'"),
+            pos,
+        ))
+    })
 }
 
 /// Turn the two control-flow errors back into the value they carry.
@@ -1147,7 +1150,10 @@ impl<'e> Vm<'e> {
             if is_shared!(*root.as_mut()) {
                 let mut guard = root.as_mut().write_lock::<Dynamic>().ok_or_else(|| {
                     let name = root_name(program, chain).unwrap_or_default();
-                    Box::new(EvalAltResult::ErrorDataRace(name.to_string(), pos))
+                    Box::new(EvalAltResult::ErrorDataRace(
+                        format!("variable '{name}'"),
+                        pos,
+                    ))
                 })?;
                 self.walk_chain(
                     program,
